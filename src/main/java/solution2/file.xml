@@ -1,0 +1,11 @@
+<fines>
+    <fine first_name="Vlad" last_name="Kruhlov" type="SPEEDING" fine_amount="4540" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Ivan" last_name="Ivanov" type="SPEEDING" fine_amount="12340" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Ivan" last_name="Ivanov" type="SPEEDING" fine_amount="12" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Ivan" last_name="Ivanov" type="PARKING" fine_amount="12" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Ivan" last_name="Ivanov" type="PARKING" fine_amount="12" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Ivan" last_name="Ivanov" type="PARKING" fine_amount="12" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Ivan" last_name="Ivanov" type="Engine" fine_amount="2543" date_time="2020-05-05 15:39:03" />
+    <fine first_name="Max" last_name="Maximovich" type="SPEEDING" fine_amount="340" date_time="2022-05-05 15:39:03" />
+    <fine first_name="Olya" last_name="UA" type="SPEEDING" fine_amount="340" date_time="2023-05-05 15:39:03" />
+</fines>
