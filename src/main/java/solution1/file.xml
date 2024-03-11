@@ -1,11 +1,11 @@
 <persons>
-    <person name="Vlad" surname="Котляревський" birthDate="09.09.1769" />
-    <person surname="Шевченко" name="Max" birthDate="09.03.1814" />
+    <person name="Влад" surname="Котляревський" birthDate="09.09.1769" />
+    <person surname="Шевченко" name="Mакс" birthDate="09.03.1814" />
     <person
             birthData="27.08.1856"
-            name = "Olya"
+            name = "Оля"
             surname = "Франко" />
-    <person name="Lesya"
+    <person name="Леся"
             surname="Українка"
             birthData="13.02.1871" />
 </persons>

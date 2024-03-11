@@ -11,64 +11,19 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.awt.SystemColor.text;
+import static java.lang.Character.*;
+import static java.sql.Types.NULL;
 
 class TrivialSAXHandler {
-    public static StringBuilder xmlStr;
-    static class XMLHandler extends DefaultHandler {
-        static private Writer out;
-        private String name, surname, lastElementName;
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            System.out.println(attributes.getLocalName(1));
-//            lastElementName = qName;
-//            System.out.println("Qname: " + attributes);
-//            if (qName.equals("person")) {
-//                System.out.println("Name: " + attributes.getValue("name"));
-//                System.out.println("Surname: " + attributes.getValue("surname"));
-//            }
-        }
-
-        @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
-//            System.out.println("Info: " + ch.toString());
-            for (char c : ch) {
-//                System.out.println(c);
-                xmlStr.append(c);
-            }
-        }
-
-        private void emit(String s)
-                throws SAXException
-        {
-            try {
-                out.write(s);
-                out.flush();
-            } catch (IOException e) {
-                throw new SAXException("I/O error", e);
-            }
-        }
-
-        @Override
-        public void error(SAXParseException e) {
-            System.err.println("Erreur non fatale (ligne " +
-                    e.getLineNumber() + ", col " +
-                    e.getColumnNumber() + ") : " + e.getMessage());
-        }
-
-        @Override
-        public void fatalError(SAXParseException e) {
-            System.err.println("Erreur fatale : " + e.getMessage());
-        }
-
-        @Override
-        public void warning(SAXParseException e) {
-            System.err.println("warning : " + e.getMessage());
-        }
-    }
-
     public static void main(String[] args) throws ParserConfigurationException, SAXException {
         String filename = "C:\\Users\\user\\IdeaProjects\\solution3\\src\\main\\java\\solution1\\file.xml";
 
@@ -89,44 +44,108 @@ class TrivialSAXHandler {
         }
     }
 
-    public static void newFile(String xmlStr){
-        try {
-            PrintWriter writer = new PrintWriter("copy.xml");
+    static class XMLHandler extends DefaultHandler {
+        static private FileWriter out;
+        public static String name, surname;
+        public static StringBuilder xmlStr = new StringBuilder();
 
-            writer.append(xmlStr);
-
-            writer.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(TrivialSAXHandler.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("File not found");
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if (qName.equals("person")) {
+                name = attributes.getValue("name");
+                surname = attributes.getValue("surname");
+            }
+//            System.out.println(name + " : " + surname);
         }
 
-    }
-//    public void setDocumentLocator(Locator locator) {
-//        System.out.println("Location : " +
-//                "publicId=" + locator.getPublicId() +
-//                "systemId=" + locator.getSystemId());
-//    }
-//    public void startDocument(){
-//        System.out.println("Debut RSS");
-//    }
-//    public void endDocument(){
-//        System.out.println("Fin RSS");
-//
-//    }
-    public void startElement(String namespace,String qualname,Attributes atts) {
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+//            System.out.println(xmlStr);
+            if (qName.equals("persons")) {
+//                System.out.println("PERSONS");
+            }
+            if (qName.equals("person")) {
+//                System.out.println("Person 123123123123123123123123123123123");
+            }
+        }
 
-//        System.out.println("Debut de balise : " +
-//                "namespace=" +namespace +
-//                "qualname="  +qualname);
-//        System.out.println("NB atttibuts : " +
-//                atts.getLength());
-//        for (int i=0;i<atts.getLength();i++) System.out.println("NB atttibuts : " +i+ " name "+atts.getQName(i)+"  = "+atts.getValue(i));
-    }
-    public void endElement(String namespace,String qualname) {
-//        System.out.println("Balise fermante : " +
-//                "namespace="+namespace+
-//                "qualname="+qualname);
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            for (char c : ch) {
+                if (c != 0 && xmlStr.indexOf("</persons>") == -1) {
+                    xmlStr.append(c);
+                }
+            }
+        }
 
+        @Override
+        public void startDocument() throws SAXException {
+            String filename = "C:\\Users\\user\\IdeaProjects\\solution3\\src\\main\\java\\solution1\\output.xml";
+            try {
+                out = new FileWriter(filename);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        @Override
+        public void endDocument() throws SAXException {
+            System.out.println(xmlStr);
+            List<String> surnameArr = new ArrayList<>();
+            List<String> surnamesFail = new ArrayList<>();
+            Pattern namePattern = Pattern.compile("(\\sname(\\s*)=(\\s*)\")(.*?)(\")");
+            Matcher nameMatcher = namePattern.matcher(xmlStr);
+            Pattern surnamePattern = Pattern.compile("(\\ssurname(\\s*)=(\\s*)\")(.*?)(\")");
+            Matcher surnameMatcher = surnamePattern.matcher(xmlStr);
+            while (surnameMatcher.find()) {
+                String surname = surnameMatcher.group()
+                        .replace(surnameMatcher.group(1), "")
+                        .replace("\"", "");
+                System.out.println(
+                        surnameMatcher.group()
+                                .replace(surnameMatcher.group(1), "")
+                                .replace("\"", "")
+                );
+                surnameArr.add(surname);
+                surnamesFail.add(surnameMatcher.group());
+            }
+            while (nameMatcher.find()) {
+                String name = nameMatcher.group()
+                        .replace(nameMatcher.group(1), "")
+                        .replace("\"", "");
+                System.out.println(
+                        nameMatcher.group()
+                                .replace(nameMatcher.group(1), "")
+                                .replace("\"", "")
+                );
+                xmlStr = new StringBuilder(xmlStr.toString().replace(name, name + " " + surnameArr.getFirst()));
+                xmlStr = new StringBuilder(xmlStr.toString().replace(surnamesFail.getFirst(), ""));
+                System.out.println(xmlStr);
+                surnameArr.remove(0);
+                surnamesFail.remove(0);
+            }
+            try {
+                out.write(String.valueOf(xmlStr));
+                out.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void error(SAXParseException e) {
+            System.err.println("Erreur non fatale (ligne " +
+                    e.getLineNumber() + ", col " +
+                    e.getColumnNumber() + ") : " + e.getMessage());
+        }
+
+        @Override
+        public void fatalError(SAXParseException e) {
+            System.err.println("Erreur fatale : " + e.getMessage());
+        }
+
+        @Override
+        public void warning(SAXParseException e) {
+            System.err.println("warning : " + e.getMessage());
+        }
     }
 }

@@ -1,0 +1,11 @@
+<persons>
+    <person name="Влад Котляревський" birthDate="09.09.1769" />
+    <person name="Mакс Шевченко" birthDate="09.03.1814" />
+    <person
+            birthData="27.08.1856"
+            name = "Оля Франко"
+            />
+    <person name="Леся Українка"
+           
+            birthData="13.02.1871" />
+</persons>
